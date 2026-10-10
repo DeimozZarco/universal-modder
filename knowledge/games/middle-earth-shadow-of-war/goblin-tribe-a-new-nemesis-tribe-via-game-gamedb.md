@@ -28,12 +28,19 @@ tags: [nemesis, tribe, gamedb, lithtech, firebird, data-mod, string-table, archc
 > files ahead of `hotchunk.arch06`. Goblin captains spawn naturally, get missions, ambushes and encounter
 > cutscenes, and survive save/reload, full restarts and later mod updates; verified in the real game by the
 > user over about 20 sessions. Making them smaller than orcs is **not** solved (two data routes failed; notes below).
+>
+> **Scope:** Goblins of War is a proof of concept. It shows that a new Nemesis tribe can be added to (injected into)
+> the game's database and behaves like a native tribe. It's meant as a base for later tribe mods, not a finished
+> content mod (goblins still borrow Marauder gear, icon and traits).
 
 ## Setup
 - Play the modded game offline. Don't use Online Conquest, Online Vendettas or Friend Vendettas while
   `..\Goblins of War` is in `default.archcfg`. The July 2018 update removed only the Market, Gold and bought War
   Chests; the online modes are still there, and a Goblin overlord defending an Online Conquest fortress, or a
   Goblin captain in someone's vendetta, would reference records their unmodded database doesn't have.
+- **No loader needed.** The mod is `default.archcfg`-only: neither the Dll Loader nor Packet Loader is used. Packet
+  Loader was disabled for every test from the persistence work onwards (saves, reloads, restarts, mod updates). The
+  Dll Loader stayed installed, but the mod loads no DLL; running without it wasn't separately tested.
 - Steam build 3095001; the public branch has not changed since 2018-09-05. A Steam verify/repair or a reinstall on
   2026-10-07 (not a game update; which of the two isn't recorded) rewrote `x64\bink2w64.dll` (killing the Dll
   Loader proxy) and `x64\default.archcfg` (dropping every `..\Mods\*.arch06` line). Re-copy the loader's patched
@@ -105,6 +112,11 @@ Considered and parked: a native plugin through the Dll Loader for size (see Open
 clones of the ordinary `Role_*` Marauder roles with `Tribes = [goblin]` added once to each of the 128 role lists
 that hold the originals (unique DLC3_/NemesisForge_ roles skipped), Goblin appended to `GP_Tribe_All`,
 `GP_Tribe_All_NoDark` and `Regal`, and `Fort_Title_Goblin` = "Goblin" in all 28 strdb files.
+**Act 2 gate (v1.1):** every goblin role's `Prediate_GlobalVar` (the game's spelling) links the stock
+`Quest/GlobalVarPredicates:Act2` (IntTest `StoryState` 200..9999999; 200 = `StartOfAct2`, so Acts 3-4 and the
+epilogue pass), or `DLC_3_4_Active_Not_Act2` where the source role already had `DLC_3_4_Active_Not`. Source
+`Role_*` records carry only those predicates (625 null, 114 DLC-not, 4 DLC-not-Act2). No goblin can then take an Act 1
+story captain's slot and quest-lock the campaign. Diffed against v1.0, only the 80 goblin roles change.
 
 ## Build steps
 1. Extract `hotchunk.arch06` with QuickBMS. Parse `game.gamedb` as above.
@@ -126,10 +138,12 @@ The oracle was the real game, played by the user, plus Windows' Application log 
   Goblin;
 - natural mix: with goblin roles weighted 5x for testing, new captains came out goblin and Terror side by side.
 Not verified: goblins as warchiefs/overlords, fortress assaults with a goblin overlord, Online/Vendetta, every
-language's text (only English seen), long-term save stability beyond a few days of play. Also unknown: where the
-War Chests opened in the Gotcha 3 test came from. Since July 2018 new chests come from Online Conquests and Online
-Vendettas (apart from old unopened ones in the Garrison), so they may have been online rewards, which would make
-that test an online one.
+language's text (only English seen), long-term save stability beyond a few days of play. The War Chests opened in the
+Gotcha 3 test were old Online Conquest/Vendetta rewards the user had never opened. War Chests and the Garrison live in
+WB's online inventory (exe strings `Agora_PlayerInventory_Query`, `garrison-get-collection`), so that test was online:
+nothing was done to keep the game offline during testing (no firewall, hosts or
+proxy), and WB's backend (`kraken-api.wbagora.com`) still answers. The game was connected, but no online mode
+(Online Conquest, Online or Friend Vendettas) was played while the mod was installed.
 
 ## Gotchas
 1. **Saved goblins came back as Machine, or vanished, after reload.** **Cause:** new named records were appended
@@ -142,8 +156,8 @@ that test an online one.
 3. **Goblin cards blank, nothing created from war chests.** **Cause:** goblin gear never streamed in because bundle,
    UI and banner predicates test TribeList `Regal`; forcing `Store_*` builders to goblin-only also mismatched the
    market's tribe pick. **Fix:** add Goblin to `Regal`; for testing point `Marketplace/Builders/FactionMember/Tribe`
-   at Goblin instead of the builders. Where the chests used for this test came from is unknown (possibly online
-   rewards; see Verification and Open questions).
+   at Goblin instead of the builders. The chests were old unopened Online Conquest/Vendetta rewards, opened with the
+   game connected to WB (see Verification).
 4. **New goblins said "Play Quests to interact with this character" and could not be tracked.** **Cause:**
    setting a builder's `Tribe` field marks members as presets (`UI_TargetDialog_PresetBlocked`); early in the
    story most fresh captains also land in bodyguard slots of locked warchiefs. **Fix:** never set `Tribe` on
@@ -177,7 +191,3 @@ One long session (about 9 hours wall-clock) including recon, format reverse-engi
   can add one, but item `CombatActionsOnAdd` is only used by player items and did not fire for goblin captains.
   The `Modifier.CharacterScale` behaviour-graph modifier's apply method is in the protected region.
 - Unique goblin gear, icon, fortress title text and voice are untouched.
-- Where the War Chests in the Gotcha 3 test came from (old unopened Garrison chests or Online Conquest/Vendetta
-  rewards), and so whether that test was online.
-- Whether the Goblin mod needs the Dll Loader or Packet Loader at all. The route reads as `default.archcfg`-only;
-  if so, the next agent can skip both.
