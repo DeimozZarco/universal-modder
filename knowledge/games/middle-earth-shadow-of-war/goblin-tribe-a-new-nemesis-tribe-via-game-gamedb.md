@@ -34,6 +34,10 @@ tags: [nemesis, tribe, gamedb, lithtech, firebird, data-mod, string-table, archc
 > content mod (goblins still borrow Marauder gear, icon and traits).
 
 ## Setup
+- **2026-10-12: install the offline mode first.**
+  [offline-mode-and-local-garrison.md](offline-mode-and-local-garrison.md) (source in
+  `examples/shadow-of-war-offline-mode`) keeps every WB request on the PC and keeps the Garrison working. Use it
+  for any new tribe or creature work, so a modded database is never tested while signed in to WB.
 - Play the modded game offline. Don't use Online Conquest, Online Vendettas or Friend Vendettas while
   `..\Goblins of War` is in `default.archcfg`. The July 2018 update removed only the Market, Gold and bought War
   Chests; the online modes are still there, and a Goblin overlord defending an Online Conquest fortress, or a
