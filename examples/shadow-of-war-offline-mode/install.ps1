@@ -1,6 +1,6 @@
 # Installs Shadow of War Offline Mode into the game's x64 folder. Run with the game closed.
-#   powershell -ExecutionPolicy Bypass -File install.ps1 [-Game "Z:\Steam\steamapps\common\ShadowOfWar"]
-param([string]$Game = "Z:\Steam\steamapps\common\ShadowOfWar")
+#   powershell -ExecutionPolicy Bypass -File install.ps1 [-Game "D:\SteamLibrary\steamapps\common\ShadowOfWar"]
+param([string]$Game = "C:\Program Files (x86)\Steam\steamapps\common\ShadowOfWar")
 $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $x64 = Join-Path $Game "x64"

@@ -2,11 +2,12 @@
 
 Keeps Middle-earth: Shadow of War off WB's online servers, while the **Garrison keeps working locally**: store, list, Details, **Deploy** and **Destroy for gear**.
 
-- **Nothing is sent to WB.** Every WB/Agora request is answered on this PC by a small local stand-in for WB's server. That covers sign-in, telemetry and the Market backend. Steam traffic is untouched.
+- **Nothing is sent to WB.** Every WinHTTP request to the WB/Agora domains in `BlockedDomains` is answered inside the game process by a small local stand-in for WB's server. That covers sign-in, telemetry and the Market backend. Steam traffic is untouched.
 - **Online play is off.** Online Conquests and Vendettas can't connect.
 - **The Garrison is stored locally.** Each orc you send there is saved as a file in `x64\OfflineGarrison\`. Deploying an orc to an empty captain slot works, and so does destroying one for gear. The gear is rolled by the game itself from the orc's equipment.
 - **Mirian is kept.** Since the 2018 Market shutdown the game moves your Mirian into an online wallet. That wallet is now `x64\OfflineWallet.txt`, and it mirrors the Mirian in your save.
 - **Nothing is unlocked or granted.** The store only gets inert placeholders. No Gold, chests, boosts or products can be bought or received.
+- **It isn't a server.** It runs inside the game process and opens no port, so nothing else can connect to it. Online Conquest, Online/Friend Vendettas and Market purchases aren't emulated.
 - **The game is untouched.** No game files are changed, and the exe and its DRM aren't modified. The mod is one `winhttp.dll` next to the exe.
 
 Tested on Steam build 3095001 (Windows 10 22H2).
@@ -51,7 +52,7 @@ Keep `OfflineGarrison\` and `OfflineWallet.txt` if you might reinstall. They hol
 
 ## Your data
 - `x64\OfflineGarrison\<id>.agb`: one file per Garrison orc (gear, appearance, traits). Back up this folder to back up your Garrison.
-- `x64\OfflineWallet.txt`: `slug=count` lines. `vc-earned` is the Mirian moved online. It changes only through the game's own requests.
+- `x64\OfflineWallet.txt`: `slug=count` lines. `vc-earned` is the Mirian moved online. It changes only through the game's own requests. Don't add slugs by hand: War Chests, boosts and other online inventory items were sold for Gold or are earned online, and this mod doesn't grant them.
 - If an orc is ever lost, `tools\log_to_object.py` can rebuild it from the request logged in `OfflineMode.log` when it was sent to the Garrison.
 
 ## Known issues
