@@ -3276,7 +3276,8 @@
    "https://www.nexusmods.com/middleearthshadowofwar/mods/168",
    "https://www.nexusmods.com/middleearthshadowofwar/mods/170",
    "https://www.nexusmods.com/middleearthshadowofwar/mods/128",
-   "knowledge/games/middle-earth-shadow-of-war/offline-mode-and-local-garrison.md"
+   "knowledge/games/middle-earth-shadow-of-war/offline-mode-and-local-garrison.md",
+   "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md"
   ],
   "tags": [
    "packet-loader",
@@ -3305,7 +3306,7 @@
    "Python 3.12 + cryptography (AES-CBC)",
    "Ghidra 12.1.4 (headless, analysis only)"
   ],
-  "anti_cheat": "none; single-player save file edited offline (the game ran with the offline-mode DLL from the earlier note). Back up both save copies first.",
+  "anti_cheat": "none; single-player save file edited offline (the game ran with the offline-mode DLL from the earlier note). Load edited saves only offline, never signed in to WB. Back up both save copies first.",
   "status": "working",
   "agents": [
    "Claude Code (Opus 5.5)"
@@ -3315,7 +3316,8 @@
   ],
   "date": "2026-10-15",
   "links": [
-   "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md"
+   "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md",
+   "knowledge/games/middle-earth-shadow-of-war/offline-mode-and-local-garrison.md"
   ],
   "tags": [
    "save-edit",
