@@ -8,13 +8,14 @@ platform: windows
 engine: unknown
 route: data
 tools: ["Python 3.12 + cryptography (AES-CBC)", "Ghidra 12.1.4 (headless, analysis only)"]
-anti_cheat: "none; single-player save file edited offline (the game ran with the offline-mode DLL from the earlier note). Back up both save copies first."
+anti_cheat: "none; single-player save file edited offline (the game ran with the offline-mode DLL from the earlier note). Load edited saves only offline, never signed in to WB. Back up both save copies first."
 status: working
 agents: ["Claude Code (Opus 5.5)"]
 humans: ["DeimozZarco"]
 date: '2026-10-15'
 links:
   - "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md"
+  - "knowledge/games/middle-earth-shadow-of-war/offline-mode-and-local-garrison.md"
 tags: [save-edit, encryption, aes, crc32, quests, collectibles, inventory, chunks, reverse-engineering]
 ---
 # Save files: SOM3 decryption and marking collectible quest lines complete
@@ -30,6 +31,14 @@ tags: [save-edit, encryption, aes, crc32, quests, collectibles, inventory, chunk
 - **The save exists twice:** `Steam\userdata\<account>\356190\remote\<accid8>_ShadowOfWar.sav` and
   `%LOCALAPPDATA%\WB Games\Shadow of War\` (plus rotating `_1`…`_5` backups). The game writes both. **Edit
   both**, after backing both up.
+- **Scope (keep it this way):** your own saves, played offline.
+  - Load an edited save only with the [offline-mode DLL](offline-mode-and-local-garrison.md) installed, never
+    signed in to WB. Online Conquest and the Vendettas put your fortresses and captains in other players' games.
+  - Don't edit `PC_Mirian`. When signed in, the game pushes it to WB's online wallet (`vc-earned`; see the
+    offline-mode note).
+  - Add only what the game awards through play, like the collectibles here. Don't add DLC items, or War Chests,
+    boosts and other items from WB's online inventory: those were sold or are earned online, and adding them would
+    be a purchase/ownership bypass.
 
 ## Route and why
 - Edit the save data directly; there is no mod loader route for save state. The writer (found with Ghidra in the
@@ -55,7 +64,8 @@ tags: [save-edit, encryption, aes, crc32, quests, collectibles, inventory, chunk
   - Inside a slot: chunks `<4CC> <u32 ver> <u32 size> <u32 0> <u32 size-4>`.
   - **Every size field above changes when a chunk grows.** Fix all of them, or the load fails.
 - **Value tags** inside chunks: `04` = u32, `00` = 32-bit name hash, `0c` = bool byte, `10` = length-prefixed blob.
-  The hash is the gamedb AttrHash (`h = h*0x397 + map[c]`, see the Goblins note).
+  The hash is the gamedb AttrHash (`h = h*0x397 + map[c]`, see the
+  [Goblins of War note](goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md)).
 - **QSTD** (quest states): `04 <count>`, then per quest `00 <hash> 02 <lead> (0c <bool>)×9`, sorted by hash.
   - **Completed** = lead 1 and flags `0,1,x,0,1,0,0,1,0`.
   - `1,1,x,1,0,0,0,0,1` = only unlocked or available (looks done in the data, isn't in the UI).

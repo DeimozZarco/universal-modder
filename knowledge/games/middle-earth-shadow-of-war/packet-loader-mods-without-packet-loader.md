@@ -20,6 +20,7 @@ links:
   - "https://www.nexusmods.com/middleearthshadowofwar/mods/170"
   - "https://www.nexusmods.com/middleearthshadowofwar/mods/128"
   - "knowledge/games/middle-earth-shadow-of-war/offline-mode-and-local-garrison.md"
+  - "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md"
 tags: [packet-loader, bundles, bndl, embb, cosmetics, talion, conversion, loose-files, archcfg, no-dll]
 ---
 # Packet Loader mods without Packet Loader: rewrite the newest .bndl load lists
@@ -34,7 +35,8 @@ tags: [packet-loader, bundles, bndl, embb, cosmetics, talion, conversion, loose-
 
 ## Credits
 The mods converted here belong to their authors. **Download them from Nexus; this note ships none of their
-files.** It documents only the conversion method.
+files.** It documents only the conversion method. A converted copy is for your own install; check each mod's
+current permissions on Nexus before sharing one.
 - **Nuzaki** (Nexus: Nuzaki1080): *No Sheaths* (mod 166; we used both the "No Scabbards (Swords)" and "No
   Scabbards (Wraith)" files), *Lightweight Armours* (168), *No Quiver* (170). Their permissions allow modification
   as long as Nuzaki is credited.
@@ -47,13 +49,16 @@ files.** It documents only the conversion method.
 ## Setup
 - Steam build 3095001, Windows 10.
 - The offline-mode DLL from [offline-mode-and-local-garrison](offline-mode-and-local-garrison.md) for testing.
-  It is unrelated to this method.
-- Python 3.12. Archive listing/extraction as in the Goblins of War note (QuickBMS + aluigi's script, or our own
-  `.arch06` lister).
+  It is unrelated to this method, but its rule holds: no Online Conquest or Vendettas while a data mod is
+  installed.
+- Python 3.12. Archive listing/extraction as in the
+  [Goblins of War note](goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md) (QuickBMS + aluigi's script, or our
+  own `.arch06` lister).
 
 ## Route and why
 - Packet Loader patches loading at run time from a DLL. The user wanted no dependencies, so we reproduced its
-  effect with data the game already reads.
+  effect with data the game already reads. On this build Packet Loader also crashed at startup about half the
+  time (Goblins of War note, Gotcha 5).
 - The engine already patches itself this way: game updates ship a **new `.bndl`** (with new sizes) plus loose
   files, and leave the old `.embb` data in place. We do the same.
 

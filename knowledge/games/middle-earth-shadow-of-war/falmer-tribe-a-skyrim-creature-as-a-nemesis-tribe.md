@@ -33,6 +33,9 @@ tags: [nemesis, tribe, creature-import, skyrim, falmer, mmsh, mesh, skinning, te
 ## Credits and prerequisites
 - **Bethesda**: the Falmer meshes and textures come from the user's own Skyrim SE install. **No Skyrim or
   Shadow of War files are in this repo.** Anyone repeating this extracts them from their own copies.
+  - The built `.arch06` holds Bethesda's meshes and textures, converted. It's a **private install**: don't upload
+    or share it (Nexus included). A public release would need a body made from your own or licensed assets, run
+    through the same pipeline.
 - **niftools** (blender_niftools_addon) for NIF import.
 - Built on our earlier notes:
   - [Goblins of War](goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md) for the gamedb format, AttrHash, the
@@ -44,12 +47,16 @@ tags: [nemesis, tribe, creature-import, skyrim, falmer, mmsh, mesh, skinning, te
 ## Setup
 - Shadow of War Steam build 3095001 with the offline-mode DLL; Goblins of War installed (the Falmer build runs
   after it on the same gamedb).
+- **Play the modded game offline**, as in the Goblins of War note. Keep the offline-mode DLL installed while the
+  Falmer archive is in `default.archcfg`, and don't use Online Conquest, Online Vendettas, Friend Vendettas or
+  WB's own Garrison (the DLL removed). A Falmer captain stored on WB's server, met in someone's vendetta or
+  defending an Online Conquest fortress references records their unmodded database doesn't have.
 - Skyrim SE (Steam). Its BSA v105 archives were read with our own reader (LZ4 frames): `falmer_male.nif`,
   textures `falmer*.dds`.
 - Blender 3.6 + niftools to import the NIF into a `.blend` (68-bone armature). Blender 4.2 headless runs the
   conform script.
-- A trainer (invisibility, one-hit kills, time advance) was used only to find and kill test captains quickly. No
-  currency.
+- A single-player trainer (invisibility, one-hit kills, time advance), offline like every test here, was used
+  only to find and kill test captains quickly. No currency.
 
 ## Route and why
 - **New tribe in gamedb** (as in Goblins of War), not a DLL. The tribe's roles carry the body/head items that swap
@@ -155,8 +162,8 @@ tags: [nemesis, tribe, creature-import, skyrim, falmer, mmsh, mesh, skinning, te
    when the game refreshes them.
 7. **An invisible captain.** **Cause:** no picker for its body type, while the head and gear empties still apply.
    **Fix:** build all three body types.
-8. **The orc head still shows.** **Cause:** `IT_empty_head_NoHair` only blanks helmet/hair (slot 0). **Fix:** a slot-11
-   head-replacement item.
+8. **The orc head still shows.** **Cause:** `IT_empty_head_NoHair` only blanks helmet/hair (slot 0). **Fix:** a
+   slot-11 head-replacement item.
 9. **Captains generated before a build keep the old look.** **Cause:** items are stored per captain at creation.
    **Fix:** test on newly generated captains.
 
