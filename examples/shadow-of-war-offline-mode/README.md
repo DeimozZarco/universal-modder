@@ -9,6 +9,7 @@ Keeps Middle-earth: Shadow of War off WB's online servers, while the **Garrison 
 - **Nothing is unlocked or granted.** The store only gets inert placeholders. No Gold, chests, boosts or products can be bought or received.
 - **It isn't a server.** It runs inside the game process and opens no port, so nothing else can connect to it. Online Conquest, Online/Friend Vendettas and Market purchases aren't emulated.
 - **The game is untouched.** No game files are changed, and the exe and its DRM aren't modified. The mod is one `winhttp.dll` next to the exe.
+  Since v0.12 it also writes one field in the game's memory (the Nemesis id prefix), so captains get ids that stay unique across sessions. `NpcGuidPrefix=0` turns that off.
 
 Tested on Steam build 3095001 (Windows 10 22H2).
 
@@ -49,6 +50,7 @@ Keep `OfflineGarrison\` and `OfflineWallet.txt` if you might reinstall. They hol
 | `GarrisonSize` | `50` | Garrison capacity sent to the game. |
 | `BlockedDomains` | WB/Agora domains | Hosts handled locally, including subdomains. |
 | `Log` | `1` | Writes `x64\OfflineMode.log`. Sign-in data and tokens are redacted. |
+| `NpcGuidPrefix` | `1` | Gives new captains Nemesis ids that are unique across offline sessions, which the Garrison needs. `0` turns it off. |
 
 ## Your data
 - `x64\OfflineGarrison\<id>.agb`: one file per Garrison orc (gear, appearance, traits). Back up this folder to back up your Garrison.

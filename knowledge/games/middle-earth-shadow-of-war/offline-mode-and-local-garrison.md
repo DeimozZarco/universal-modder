@@ -57,7 +57,9 @@ tags: [offline, online-services, hydra, agora, winhttp, proxy-dll, garrison, nem
   - survivalizeed's loaders were present on the test PC but aren't used.
 
 ## Route and why
-- **Route:** `native-hook`, but only as a DLL search-order proxy. No game code is patched or hooked.
+- **Route:** `native-hook`, but only as a DLL search-order proxy. No game code is patched or hooked. Since v0.12
+  the DLL also writes one data field in the game's heap, the Nemesis id prefix (see How the game works);
+  `NpcGuidPrefix=0` turns that off.
   - `winhttp.dll` forwards all 70 WinHTTP exports to the System32 DLL. Assembly stubs and a `.def` file are
     generated from the real export list.
   - It intercepts only sessions, connects and requests whose host matches `BlockedDomains`: `wbagora.com`,

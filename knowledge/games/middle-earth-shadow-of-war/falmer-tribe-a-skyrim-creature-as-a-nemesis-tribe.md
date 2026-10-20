@@ -38,9 +38,10 @@ tags: [nemesis, tribe, creature-import, skyrim, falmer, mmsh, mesh, skinning, te
 ## Credits and prerequisites
 - **Bethesda**: the Falmer meshes and textures come from the user's own Skyrim SE install. **No Skyrim or
   Shadow of War files are in this repo.** Anyone repeating this extracts them from their own copies.
-  - The built `.arch06` holds Bethesda's meshes and textures, converted. It's a **private install**: don't upload
-    or share it (Nexus included). A public release would need a body made from your own or licensed assets, run
-    through the same pipeline.
+  - The built `.arch06` holds Bethesda's meshes and textures, converted, and since 2026-10-20 Skyrim's Falmer sounds
+    inside the game's own voice banks, rebuilt. It's a **private install**: don't upload or share it (Nexus
+    included). A public release would need a body and sounds made from your own or licensed assets, run through the
+    same pipeline.
 - **niftools** (blender_niftools_addon) for NIF import.
 - Built on our earlier notes:
   - [Goblins of War](goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md) for the gamedb format, AttrHash, the
@@ -222,9 +223,10 @@ tags: [nemesis, tribe, creature-import, skyrim, falmer, mmsh, mesh, skinning, te
     each grunt class `SimpleModel` (repeat the orc entries to set the share).
 11. **Prisoners:** `Orc_Prisoner` template → a Falmer character model on the same entries; strip the five orc look
     items from the six prisoner gang types.
-12. **Audio:** extract the voice's banks, rebuild them with PCM media from the Skyrim WAVs, ship the banks + updated
-    `.bndl`s (and the presentation `.embb`/`.bndl` pairs) in the mod archive, and set every Falmer role's forced
-    personality to that voice. Mount order matters: the mod archive goes at the bottom of `default.archcfg`.
+12. **Audio:** extract the voice's banks, rebuild them with PCM media from your own Skyrim's WAVs, put the banks +
+    updated `.bndl`s (and the presentation `.embb`/`.bndl` pairs) in your private mod archive (never shared: it
+    holds Skyrim's sounds and the game's own banks), and set every Falmer role's forced personality to that voice.
+    Mount order matters: the mod archive goes at the bottom of `default.archcfg`.
 
 ## Verification
 - In game (user, screenshots reviewed every round): the Falmer body and head with correct skin on slim and stocky
@@ -236,8 +238,8 @@ tags: [nemesis, tribe, creature-import, skyrim, falmer, mmsh, mesh, skinning, te
   size visible in field groups and outposts, also at range, with ordinary grunts loading normally; Falmer prisoners
   visible up close with clean skin, dominate/drain working; a new captain playing the Skyrim Falmer sounds in an
   encounter and in combat, then dominated and garrisoned.
-- Not verified: every finisher type (sever finishers such as Cleave); performance with many Falmer on screen; the
-  a second PC; other game languages (only the English presentation lines were replaced).
+- Not verified: every finisher type (sever finishers such as Cleave); performance with many Falmer on screen; a
+  second PC; other game languages (only the English presentation lines were replaced).
 
 ## Gotchas
 1. **Sheared, scrambled skin ("chrome" chevrons).** **Cause:** the per-part header records kept the template's
