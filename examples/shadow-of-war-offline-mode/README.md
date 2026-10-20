@@ -1,4 +1,4 @@
-# Shadow of War Offline Mode + Local Garrison (v0.10)
+# Shadow of War Offline Mode + Local Garrison (v0.12)
 
 Keeps Middle-earth: Shadow of War off WB's online servers, while the **Garrison keeps working locally**: store, list, Details, **Deploy** and **Destroy for gear**.
 
@@ -60,6 +60,15 @@ Keep `OfflineGarrison\` and `OfflineWallet.txt` if you might reinstall. They hol
 - A Steam "Verify integrity" doesn't remove `winhttp.dll`, but check that it's still there after a game update.
 
 ## Changes
+- **v0.12 (2026-10-20):** unique Nemesis ids offline (fixes "You cannot send this Follower to the Garrison").
+  - Offline the game's id prefix for new captains stays empty and its counter restarts every launch, so captains made in
+    different sessions get the same `_NPC_<n>` id, and the Garrison refuses a captain whose id another one has.
+  - The DLL now writes a random 32-hex prefix into the game's analytics manager, the same place the online session
+    GUID goes, after the game's first network request (and only if the field is still empty). New captains get
+    `<prefix>_NPC_<n>`. Existing duplicates stay until the save's ids are rewritten.
+  - `NpcGuidPrefix=0` in `OfflineMode.ini` turns it off.
+  - v0.11 wrote the prefix as soon as the manager pointer existed, before the game's first request; in one session
+    the game then made no online requests at all and the Garrison showed a red lock. v0.12 waits.
 - **v0.10 (2026-10-12):** Deploy and Destroy for gear work.
   - After removing an orc, the game waits for a `garrison_removal` notification from the server before it places the captain or rolls the gear.
   - The local stand-in now sends that notification and accepts the game's dismissal.

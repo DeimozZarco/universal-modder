@@ -3604,7 +3604,7 @@
  {
   "path": "games/middle-earth-shadow-of-war/falmer-tribe-a-skyrim-creature-as-a-nemesis-tribe.md",
   "kind": "game",
-  "title": "Falmer tribe: a Skyrim creature imported as a Nemesis tribe (mesh conform, MMSH/texture/bundle format, body-replacement items, corpse + Garrison fix)",
+  "title": "Falmer tribe: a Skyrim creature imported as a Nemesis tribe, with titles, wild grunts/prisoners and Skyrim audio (mesh conform, MMSH/texture/bundle format, body-replacement items, grunt body loading, Wwise PCM bank replacement)",
   "game": "Middle-earth: Shadow of War",
   "games_also": [
    "The Elder Scrolls V: Skyrim Special Edition"
@@ -3615,6 +3615,7 @@
   "route": "data",
   "tools": [
    "Blender 3.6.23 + blender_niftools_addon 0.1.1 (NIF import)",
+   "own Wwise SoundBank v118 reader/writer (Python, PCM WEMs; no Wwise authoring tool)",
    "Blender 4.2.3 (conform script, headless)",
    "Python 3.12 + numpy (own MMSH/.tex/.bndl/.arch06 tools, BSA reader)",
    "custom C# gamedb/strdb reader-writer (PowerShell Add-Type)",
@@ -3622,14 +3623,14 @@
    "Ghidra 12.1.4 (headless, analysis only)"
   ],
   "anti_cheat": "none; loose data + an extra archive, exe untouched. All testing ran offline through the offline-mode DLL and its local Garrison (never signed in to WB).",
-  "status": "in-progress",
+  "status": "working",
   "agents": [
    "Claude Code (Opus 5.5)"
   ],
   "humans": [
    "DeimozZarco"
   ],
-  "date": "2026-10-15",
+  "date": "2026-10-20",
   "links": [
    "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md",
    "knowledge/games/middle-earth-shadow-of-war/offline-mode-and-local-garrison.md",
@@ -3652,7 +3653,14 @@
    "garrison",
    "corpse",
    "ragdoll",
-   "body-replacement"
+   "body-replacement",
+   "titles",
+   "grunts",
+   "ambient-spawns",
+   "prisoners",
+   "wwise",
+   "audio",
+   "soundbank"
   ]
  },
  {
@@ -3722,7 +3730,7 @@
   "humans": [
    "DeimozZarco"
   ],
-  "date": "2026-10-12",
+  "date": "2026-10-20",
   "links": [
    "examples/shadow-of-war-offline-mode",
    "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md",
@@ -3741,7 +3749,9 @@
    "local-server",
    "binary-protocol",
    "reverse-engineering",
-   "testing-prerequisite"
+   "testing-prerequisite",
+   "npc-id",
+   "save-edit"
   ]
  },
  {
