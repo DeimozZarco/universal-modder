@@ -18,7 +18,7 @@ links:
   - "knowledge/games/middle-earth-shadow-of-war/goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md"
   - "https://github.com/recastnavigation/recastnavigation"
   - "https://github.com/blueskythlikesclouds/TagTools"
-tags: [toolkit, file-formats, ltar, bundles, objres, gadb, prfb, ltmi, texr, wdsc, terrain, havok, tag0, hknp, hkai, recast, cadb, volm, uiwd, uis, kit-copy, trace-plugin, map-import]
+tags: [toolkit, file-formats, ltar, bundles, objres, gadb, prfb, ltmi, texr, wdsc, terrain, havok, tag0, hknp, hkai, recast, cadb, volm, uiwd, uis, kit-copy, trace-plugin, map-import, lithtech, firebird]
 ---
 
 # Map import toolkit: Shadow of War / Shadow of Mordor file formats and the tools we wrote
@@ -31,17 +31,24 @@ tags: [toolkit, file-formats, ltar, bundles, objres, gadb, prfb, ltmi, texr, wds
 > names given) and proven by byte-identical round trips on stock files.
 
 ## Disclaimers
-- The mod these tools built is **personal** (the author's own install, maybe friends) and is **not published**. The
-  hope is that the framework helps others. **Only the Steam build 3095001 on Windows was tested.** Formats or exe
-  addresses may differ on other stores, platforms or versions.
+- The mod these tools built is **personal** (the author's own install) and is **not shared**: its archives hold
+  converted Shadow of Mordor and Shadow of War assets, so anyone else builds them from their own copies. The hope is
+  that the framework helps others. **Only the Steam build 3095001 on Windows was tested.** Formats or exe addresses
+  may differ on other stores, platforms or versions.
 - No game files, extracted assets or decompiled code are here; layouts are described in our own words.
 
 ## Setup
 - Python 3.12 with numpy (+ Pillow for images). C# 5 code compiled in Windows PowerShell 5.1 with `Add-Type` (no SDK
   needed) for the game database. w64devkit g++ for the Recast CLI and gcc for the trace plugin.
-- Third party: Recast v1.6.0 core (zlib licence); TagTools' `TagTools.py` ported to Python 3; QuickBMS +
-  `shadow_of_mordor.bms` 0.4 for listing / extracting stock `.arch06` (Oodle) archives; texconv for texture decode /
-  encode; Ghidra for reading loaders. Credits and links are in the main note.
+- Third party: Recast v1.6.0 core (zlib licence); TagTools' `TagTools.py` (MIT, Python 2) ported to Python 3;
+  QuickBMS + `shadow_of_mordor.bms` 0.4 for listing / extracting stock `.arch06` (Oodle) archives; texconv for
+  texture decode / encode; Ghidra for reading loaders. Credits and links are in the main note.
+- Related notes: the [Goblins note](goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md) (game.gamedb), the
+  [Packet Loader note](packet-loader-mods-without-packet-loader.md) (`.bndl` rewrites) and the
+  [Havok HKX technique note](../../techniques/havok-hkx-chunked-packfile-family.md) (Havok versions, `SDKV`, the
+  tagfile family). Public code for some of the same Havok structures: DSMapStudio's HKX2
+  (`hknpCompressedMeshShapeData`, `hkcdStaticTreeCodec3Axis4`, and an `hkaiNavMeshBuilder` that turns Recast output
+  into an `hkaiNavMesh` for Dark Souls III): <https://github.com/soulsmods/DSMapStudio>.
 - Coordinates: game units are **centimetres**, y up. Havok data is in **metres**. SoM Udûn → our world offset is
   **(+8846, −16203, −888) cm**.
 
@@ -80,16 +87,18 @@ Principles that kept ~90 builds stable:
 ## How the game works (format reference)
 
 ### Hash
-- **sowhash** (exe FUN_140C6DA00): `h = h*0x397 + (signed byte)map[c]`, map = a 256-byte case-fold table in the exe.
-  It keys database attribute names, record lookups, object names (OBJL hash, VOLM lookup, SCRB, ONLS), Lua section
-  names, bundle sections and surface tags. Recover unknown attribute names by hashing every NUL-terminated string in
-  both exes and matching.
+- **sowhash** (the Goblins note's AttrHash; exe FUN_140C6DA00): `h = h*0x397 + (signed byte)map[c]`, map = a
+  256-byte case-fold table in the exe. It keys database attribute names, record lookups, object names (OBJL hash,
+  VOLM lookup, SCRB, ONLS), Lua section names, bundle sections and surface tags. Recover unknown attribute names by
+  hashing every NUL-terminated string in both exes and matching.
 - **Surface tag** of a `Surfaces/Surfaces` record = `(v + (v >> 16)) & 0xFFFF`, v = sowhash(record name).
 
 ### LTAR archive (`ltar.py`)
 - Header: `'LTAR'`, u32 version 4, u32 namesSize, u32 folders, u32 files, 28 zero bytes. Then the names blob (offset 0
   = empty string), then:
-  - files: 30 B each = u32 nameOff, u64 offset, u64 zsize, u64 size, u8 0, u8 flags (0 = stored);
+  - files: 30 B each = u32 nameOff, u64 offset, u64 zsize, u64 size, u8 0, u8 flags (0 = stored; aluigi's script
+    reads these two bytes as 1 and "usually 9" on stock compressed entries, whose data is `[u32 zsize][u32 size]`
+    Oodle chunks, each 4-byte aligned from the entry's start);
   - folders: 16 B each = u32 nameOff, i32 firstSubFolder, i32 nextSibling, u32 fileCount (DFS order; files in
     folder order);
   - data.
@@ -279,9 +288,10 @@ Each entry: **tool**: what it does → how. "Lib" = imported by build scripts.
 
 ### C. Scenery assets
 - **`som_tex.py`**: TEXR v3 → v8: read the header, prepend the `.tex0` top mip if present, complete mips to 1×1
-  (SoM chains stop at 4×4; every level below is one block-format block, a copy of the last block), write the v8 header. **`tex_pipeline.py`** batches it and applies **`tex_fix.py`**
-  ops via texconv: `normal` (B = 255), `somspec` (R 170, G 255, B = 255 − B, skipped when already stock-like), `fill`,
-  `grade` (saturation / brightness / tint, for the Morgul stone). **`texhdr.py`**, **`texstats.py`**, **`texchan.py`**,
+  (SoM chains stop at 4×4; every level below is one block-format block, a copy of the last block), write the v8
+  header. **`tex_pipeline.py`** batches it and applies **`tex_fix.py`** ops via texconv: `normal` (B = 255),
+  `somspec` (R 170, G 255, B = 255 − B, skipped when already stock-like), `fill`, `grade` (saturation / brightness /
+  tint, for the Morgul stone). **`texhdr.py`**, **`texstats.py`**, **`texchan.py`**,
   **`texa_sheet.py`**: inspect headers, channel stats and texture arrays.
 - **`mat_survey.py`** → **`mat_catalog.py`** (stock SoW materials grouped by shader: template file, hash, header
   fields, texture slots) → **`mat_convert.py`**: per SoM material, take the template of the same shader (or a mapped
@@ -474,9 +484,10 @@ Each entry: **tool**: what it does → how. "Lib" = imported by build scripts.
 ## Gotchas
 1. **A converted file loads but crashes later.** **Cause:** header counters not updated (PRFB decl counts s9 / s10,
    arena size s11). **Fix:** recompute every counter from the written data, then re-parse in a check pass.
-2. **A Havok blob crashes the loader.** **Cause:** types without THSH hashes, or a TYPE section that lacks a type the
-   data now uses (convex shapes on a mesh-only blob). **Fix:** keep the source's TYPE section; re-type onto a stock
-   blob whose table is a superset; check `unhashed()`.
+2. **A Havok blob crashes the loader.** **Cause:** types without THSH hashes (TagTools' writer only emits THSH for
+   types that already carry a hash), or a TYPE section that lacks a type the data now uses (convex shapes on a
+   mesh-only blob). **Fix:** keep the source's TYPE section; re-type onto a stock blob whose table is a superset; check
+   `unhashed()`.
 3. **TagTools writes the half-float `maxAllowedPenetration` as a 4-byte float over the next field.** **Fix:** give the
    float with the half in its low 16 bits, written before the overlapping field.
 4. **TagTools places rel-arrays a breadth-first round later than stock.** **Fix:** write each shape's arrays right
@@ -485,8 +496,11 @@ Each entry: **tool**: what it does → how. "Lib" = imported by build scripts.
    are tight per axis; SoM's aren't.
 6. **Bools in GADB are bits.** Any generic repacker must keep bit indices; dumpers must read bits.
 7. **Surface tag fold is addition** (`(v + (v >> 16)) & 0xFFFF`).
-8. **Recast tiles don't share vertices or portals.** Weld on a global cell grid and split border edges, or the navmesh
-   is thousands of disconnected tiles.
+8. **Recast tiles don't share vertices, and nothing links them.** Recast builds each tile on its own and only flags
+   tile-border edges as portals (`0x8000 | side`); Detour links them at run time, but an `hkaiNavMesh` needs the links
+   written into its edges (`oppositeEdge` / `oppositeFace`). Weld on a global cell grid and split border edges, or the
+   navmesh is thousands of disconnected tiles. (Recast's own `rcMergePolyMeshes` welds identical vertices too, but its
+   16-bit indices cap the result at 65,535 vertices and polygons.)
 9. **Recast's polygon winding vs Havok's:** Havok needs CCW from above. Check every build.
 10. **Heights from a calibration break after re-basing:** read Havok heightfield data with its own scale fields.
 11. **Kit copies need everything that wires them:** ObjectDB values, SCRB, ONLS, Lua entries *and* the world's Lua

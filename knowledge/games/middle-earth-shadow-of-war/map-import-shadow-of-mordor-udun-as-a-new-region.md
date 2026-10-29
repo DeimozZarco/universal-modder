@@ -3,7 +3,7 @@ kind: game
 title: 'Map import: Shadow of Mordor''s Udûn as a playable new region in Shadow of War'
 game: 'Middle-earth: Shadow of War'
 games_also: ['Middle-earth: Shadow of Mordor']
-game_version: 'Shadow of War Steam build 3095001 (exe 1.0.8874.0, public branch, unchanged since 2018-09-05), Windows 10 22H2; Shadow of Mordor Steam copy as the map source'
+game_version: 'Shadow of War Steam build 3095001 (exe 1.0.8874.0, public branch, unchanged since 2018-09-05), Windows 10 22H2; Shadow of Mordor Steam copy (public branch, build 7348332) as the map source'
 platform: windows
 engine: unknown
 route: data
@@ -21,7 +21,7 @@ links:
   - "https://github.com/recastnavigation/recastnavigation"
   - "https://github.com/blueskythlikesclouds/TagTools"
   - "https://www.nexusmods.com/middleearthshadowofwar/mods/99"
-tags: [map-import, total-conversion, mashup, new-region, world-map, fast-travel, region-map, minimap, prefab-conversion, material-conversion, texture-conversion, havok, hknp, collision, navmesh, recast, hkai, parkour, terrain, army-screen, nemesis, faction, ai-spawns, quests, lua, trace-plugin, firebird]
+tags: [map-import, total-conversion, mashup, new-region, world-map, fast-travel, region-map, minimap, prefab-conversion, material-conversion, texture-conversion, havok, hknp, collision, navmesh, recast, hkai, parkour, terrain, army-screen, nemesis, faction, ai-spawns, quests, lua, trace-plugin, lithtech, firebird]
 ---
 
 # Map import: Shadow of Mordor's Udûn as a playable new region in Shadow of War
@@ -37,17 +37,21 @@ tags: [map-import, total-conversion, mashup, new-region, world-map, fast-travel,
 > remaining spawn problem, and the user declared the import a success.
 
 ## Disclaimers
-- **Personal project.** The real mod was made for the author's own install and maybe a few friends. It is **not
-  distributed publicly** and won't be. This note shares the process, tools and research only, in the hope that the
-  framework helps other modders bring other maps, or other ideas, into the game.
+- **Personal project.** The real mod was made for the author's own install. It is **not distributed**, publicly or
+  privately, and won't be: the built archives hold converted Shadow of Mordor and Shadow of War assets, so anyone
+  else, friends included, builds them from their own copies of both games. This note shares the process, tools and
+  research only, in the hope that the framework helps other modders bring other maps, or other ideas, into the game.
 - **Only tested on the Steam build** of Shadow of War (build 3095001, Windows 10 22H2) with a Steam copy of Shadow of
   Mordor as the source. Not tested on GOG/Epic/Microsoft Store/console builds, other exe versions, Proton or any other
   platform. Every exe address in this note is for that Steam build only.
 - **No game files are in this repo.** Everything SoM- or SoW-derived (meshes, textures, collision, databases, world
   files) is extracted from the user's own copies at build time. The built archive contains converted Monolith /
   WB Games assets, so it must not be uploaded or shared.
-- **Play the modded game offline** (see the [offline-mode note](offline-mode-and-local-garrison.md)). A modded region
-  and army in an online save could reach WB's servers or other players' games.
+- **Play the modded game offline**, as in the other notes here: keep the
+  [offline-mode DLL](offline-mode-and-local-garrison.md) installed while the `MapImport` lines are in
+  `default.archcfg`, and don't use Online Conquest, Online or Friend Vendettas, or WB's own Garrison (the DLL
+  removed). A save with Udûn's region, `Faction_Udun` and its captains references records an unmodded database
+  doesn't have, and those modes carry your captains into other players' games.
 - The mod sits on top of the author's other private mods (Goblins of War and Falmer databases); the database steps
   below apply to any game.gamedb.
 
@@ -56,24 +60,25 @@ Third-party tools (each GitHub tool's source was reviewed for malicious code bef
 - **Recast** (recastnavigation, Mikko Mononen and contributors), tag v1.6.0, commit 6dc1667, zlib licence:
   <https://github.com/recastnavigation/recastnavigation>. Only the core `Recast` library is compiled, inside our own
   CLI (`recast_cli.cpp`); it builds the Udûn navmesh polygons.
-- **TagTools** (blueskythlikesclouds), commit 70d05f8: <https://github.com/blueskythlikesclouds/TagTools>. Its
-  Havok 2016 tagfile (TAG0) reader **and writer**, ported to Python 3, are the base of our `tag0.py` (collision,
-  navmesh and heightfield blobs). Its bundled prebuilt `AssetCc2.exe` / `CollisionConverter.exe` were *not* kept
-  or run (unverifiable binaries). Check its licence before redistributing anything built on it.
+- **TagTools** (blueskythlikesclouds, MIT), commit 70d05f8: <https://github.com/blueskythlikesclouds/TagTools>. Its
+  Havok 2016 tagfile (TAG0) reader **and writer** (`TagTools.py`, Python 2), ported to Python 3, are the base of our
+  `tag0.py` (collision, navmesh and heightfield blobs). Only `TagTools.py` was used: the repo's prebuilt
+  `Dependencies/AssetCc2.exe` (Havok's own converter) and `CollisionConverter.exe` (built against the Havok SDK)
+  were *not* kept or run.
 - Reviewed but not usable for SoW (Havok 2016): **HKLib** (The12thAvenger, Havok 2018) and **HavokLib**
   (katalash fork of PredatorCZ's, packfiles / animation only). Worth knowing for other Havok games.
 - **QuickBMS** (Luigi Auriemma) with his **`shadow_of_mordor.bms` 0.4** script: lists and extracts SoW `.arch06` (LTAR v4,
   Oodle) and bundle `.embb`. <http://quickbms.aluigi.org>
-- **Ghidra 12.1.4** (NSA) with Temurin JDK 21: headless static analysis of a memory dump of the exe (no exe
-  patching). <https://github.com/NationalSecurityAgency/ghidra>
+- **Ghidra 12.1.4** (NSA) with Temurin JDK 21: headless static analysis of a memory dump of the running exe, kept
+  private outside any repo (no exe patching). <https://github.com/NationalSecurityAgency/ghidra>
 - **w64devkit** (Christopher Wellons): GCC 16.2 for the trace plugin and the Recast CLI. <https://github.com/skeeto/w64devkit>
 - **Shadow of War Dll Loader** by survivalizeed (Nexus mod 99): loads `x64\plugins\*.dll`, used only for our
   diagnostic trace plugin. <https://www.nexusmods.com/middleearthshadowofwar/mods/99>
 - **texconv** (Microsoft DirectXTex): texture decode / re-encode in the texture fixes. <https://github.com/microsoft/DirectXTex>
 - **Blender 4.2.3** (headless OBJ previews), **Python 3.12** with numpy, Pillow, capstone, lz4; **.NET** (C# through
   PowerShell `Add-Type`); **GitHub CLI** for the KB PR.
-- Ideas studied, not used: *Roaming Captains* (Nexus 255) for outpost captains (we built captain placement from
-  stock kits instead).
+- Ideas studied, not used: *More Captains in Free Roam* by naamionallex (Nexus 255; its plugin is called Roaming
+  Captains) for outpost captains (we built captain placement from stock kits instead).
 - Our earlier notes this builds on: [Goblins of War](goblin-tribe-a-new-nemesis-tribe-via-game-gamedb.md) (gamedb
   format, AttrHash, record sorting), [offline mode](offline-mode-and-local-garrison.md) (every test ran with it),
   [save format](save-format-decrypt-and-collectible-quests.md) (save backup / restore).
@@ -82,7 +87,8 @@ Third-party tools (each GitHub tool's source was reviewed for malicious code bef
 ## Setup
 - Shadow of War, Steam build 3095001, Windows 10 22H2, 16 GB RAM (one heavy job at a time: Ghidra, a world build or
   a 2 GB bundle write can each fill it). Offline-mode DLL v0.12 installed for every test.
-- Shadow of Mordor, Steam, in the same library (`udun.arch05` 5.3 GB + `udun_0.arch05` high mips + `udun_weather.arch05`).
+- Shadow of Mordor, Steam (app 241930, public branch: build 7348332, unchanged since 2021-09-13), in the same
+  library (`udun.arch05` 5.3 GB + `udun_0.arch05` high mips + `udun_weather.arch05`).
 - Load order: our archive and database are mounted from their own folder with lines in `x64\default.archcfg`
   (`..\MapImport`, `..\MapImport\mapimport_uNN.arch06`, the region-map and army-stage archives). The database folder
   is mounted after any other mod's database.
@@ -115,8 +121,9 @@ the [toolkit note](map-import-toolkit-formats-and-tools.md).
 - A plain folder override only reaches files that exist as real archive files. Files that exist only inside a bundle
   need an **LTAR archive with an `archivepatchloosefiles.txt`** index (hash-sorted path list) in its root, which is how
   community mod archives are built too.
-- Names everywhere are hashed with **sowhash**: `h = h*0x397 + map[c]` over a case-folding table (exe FUN_140C6DA00).
-  Attribute names in databases, Lua section names, bundle sections, object names and surface tags all use it.
+- Names everywhere are hashed with **sowhash** (the Goblins note's AttrHash): `h = h*0x397 + map[c]` over a
+  case-folding table (exe FUN_140C6DA00). Attribute names in databases, Lua section names, bundle sections, object
+  names and surface tags all use it.
 
 ### 2. Regions, the world map and fast travel
 - Udûn reuses the unused **`Regions/Region:BlackGates`** record (the prologue region). Fields that matter:
