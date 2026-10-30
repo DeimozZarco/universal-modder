@@ -3,7 +3,7 @@ kind: game
 title: "Small mods: two new orc body types for grunts and captains, a Talion armour/sword replacer, and the engine facts behind their bugs (MMSH draw counts, armour cloth in .skel, captain body items, save orc records)"
 game: 'Middle-earth: Shadow of War'
 games_also: ["The Elder Scrolls V: Skyrim Special Edition", "Solo Leveling: Arise Overdrive"]
-game_version: 'Steam build 3095001 (public branch, unchanged since 2018-09-05), Windows 10 22H2; Skyrim SE and Solo Leveling: Arise Overdrive (Steam) as asset sources'
+game_version: 'Steam build 3095001 (public branch, unchanged since 2018-09-05), Windows 10 22H2; asset sources: Skyrim Special Edition Steam build 24914197 (SkyrimSE.exe 1.7.104.0) and Solo Leveling: Arise Overdrive Steam build 24663924'
 platform: windows
 engine: unknown
 route: data
@@ -27,14 +27,17 @@ tags: [nemesis, grunts, captains, body-types, body-replacement, garrison, mmsh, 
 > can roll, which survive Dominate and the Garrison; a **Talion replacer** (Skyrim Daedric armour on the T4 Black
 > Númenórean armour, the Ebony Blade on the T4 sword) with the Daedric red glow repainted Ringwraith green; ten
 > pool weapons. This note keeps only what was **new** compared with the earlier notes: four engine facts that each
-> cost a test round. The mods are personal (for the user and friends) and not published; the hope is that the
-> framework and these facts help other modders.
+> cost a test round. The mods are made for the author's own install and are **not distributed**, publicly or
+> privately: the built archives hold converted Skyrim SE, Solo Leveling and Shadow of War assets, so anyone else,
+> friends included, builds them from their own copies of the games. The hope is that the framework and these facts
+> help other modders.
 
 ## Setup
 - Game: Steam build 3095001, Windows 10 22H2, OfflineMode DLL (see the offline note), tested on the user's
   long-running campaign save (Act 3+, Udûn imported as a region).
-- Sources: Skyrim SE (`Skyrim - Meshes0/1.bsa`, `Textures2/5/7.bsa`: Daedric cuirass/gauntlets/boots, Ebony Blade,
-  NPC orc FaceGen head), Solo Leveling: Arise Overdrive (Unity; High Orc skinned mesh via UnityPy).
+- Sources: Skyrim SE, Steam build 24914197, SkyrimSE.exe 1.7.104.0 (`Skyrim - Meshes0/1.bsa`, `Textures2/5/7.bsa`:
+  Daedric cuirass/gauntlets/boots, Ebony Blade, NPC orc FaceGen head); Solo Leveling: Arise Overdrive, Steam build
+  24663924 (Unity; High Orc skinned mesh via UnityPy).
 - Our tools (Python unless noted): MMSH reader/writer, SKEL Havok stripper, LTAR packer, bundle builder, a C#
   gamedb editor, a save decrypt/encrypt helper.
 

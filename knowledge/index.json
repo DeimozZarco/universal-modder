@@ -5097,7 +5097,7 @@
    "The Elder Scrolls V: Skyrim Special Edition",
    "Solo Leveling: Arise Overdrive"
   ],
-  "game_version": "Steam build 3095001 (public branch, unchanged since 2018-09-05), Windows 10 22H2; Skyrim SE and Solo Leveling: Arise Overdrive (Steam) as asset sources",
+  "game_version": "Steam build 3095001 (public branch, unchanged since 2018-09-05), Windows 10 22H2; asset sources: Skyrim Special Edition Steam build 24914197 (SkyrimSE.exe 1.7.104.0) and Solo Leveling: Arise Overdrive Steam build 24663924",
   "platform": "windows",
   "engine": "unknown",
   "route": "data",
