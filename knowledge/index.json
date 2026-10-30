@@ -4963,7 +4963,7 @@
   "games_also": [
    "Middle-earth: Shadow of Mordor"
   ],
-  "game_version": "Shadow of War Steam build 3095001 (exe 1.0.8874.0, public branch, unchanged since 2018-09-05), Windows 10 22H2; Shadow of Mordor Steam copy as the map source",
+  "game_version": "Shadow of War Steam build 3095001 (exe 1.0.8874.0, public branch, unchanged since 2018-09-05), Windows 10 22H2; Shadow of Mordor Steam copy (public branch, build 7348332) as the map source",
   "platform": "windows",
   "engine": "unknown",
   "route": "data",
@@ -5024,6 +5024,7 @@
    "quests",
    "lua",
    "trace-plugin",
+   "lithtech",
    "firebird"
   ]
  },
@@ -5088,7 +5089,9 @@
    "uis",
    "kit-copy",
    "trace-plugin",
-   "map-import"
+   "map-import",
+   "lithtech",
+   "firebird"
   ]
  },
  {
